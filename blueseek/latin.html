@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Latin Square Design ANOVA</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background-color: #0c0a19;
+    color: #fff;
+    margin: 0;
+    min-height: 100vh;
+  }
+  .container {
+    max-width: 680px;
+    margin: 60px auto;
+    background: linear-gradient(135deg, #2c0735 0%, #1c0631 50%, #16052b 100%);
+    border-radius: 2rem;
+    padding: 2.2rem 2.5rem 2rem 2.5rem;
+    box-shadow: 0 8px 48px 0 #8000ff33;
+  }
+  h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(90deg, #8000ff, #e100ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-size: 2.2rem;
+    font-weight: 700;
+  }
+  label {
+    display: block;
+    margin: 1rem 0 0.3rem 0;
+    font-weight: 500;
+  }
+  .input-group {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .input-group input {
+    flex: 1;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid #e100ff33;
+    color: #fff;
+    font-size: 1rem;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+  }
+  .data-input {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .data-input input {
+    width: 100%;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid #e100ff33;
+    color: #fff;
+    font-size: 1rem;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    text-align: center;
+  }
+  .treatment-input {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .treatment-input input {
+    width: 100%;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid #e100ff33;
+    color: #fff;
+    font-size: 1rem;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    text-align: center;
+  }
+  select {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid #e100ff33;
+    color: #fff;
+    font-size: 1.05rem;
+    border-radius: 0.5rem;
+    padding: 0.4rem 1rem;
+    margin-bottom: 1rem;
+    margin-left: 0.5rem;
+  }
+  .btn-primary {
+    margin-top: 1.2rem;
+    width: 100%;
+    padding: 0.8rem 0;
+    border: none;
+    border-radius: 0.6rem;
+    background: linear-gradient(90deg, #8000ff, #e100ff);
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: box-shadow 0.3s;
+    box-shadow: 0 4px 20px -1px #8000ff44;
+  }
+  .btn-primary:hover {
+    box-shadow: 0 8px 32px -2px #e100ff55;
+  }
+  .output {
+    background: rgba(255,255,255,0.07);
+    border-radius: 0.7rem;
+    padding: 1rem;
+    margin-top: 1.5rem;
+    box-shadow: 0 2px 12px 0 #8000ff22;
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+  th, td {
+    border: 1px solid #e100ff33;
+    padding: 0.6rem 0.8rem;
+    text-align: center;
+  }
+  th {
+    background: linear-gradient(90deg, #8000ff, #e100ff);
+    color: #fff;
+  }
+  .decision {
+    font-weight: 700;
+    margin-top: 1rem;
+    font-size: 1.15rem;
+  }
+  .reject {
+    color: #ff6bcb;
+  }
+  .accept {
+    color: #00e8c6;
+  }
+  .note {
+    margin-top: 0.7rem;
+    font-size: 0.9rem;
+    opacity: 0.7;
+  }
+  nav {
+    background: rgba(0,0,0,0.3);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 2px 10px rgba(128,0,255,0.5);
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    color: #ddd;
+  }
+  nav a {
+    color: #ddd;
+    text-decoration: none;
+    margin-left: 1rem;
+    transition: color 0.3s;
+  }
+  nav a:hover {
+    color: #e100ff;
+  }
+  .gradient-text {
+    background: linear-gradient(90deg, #8000ff, #e100ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 700;
+  }
+</style>
+</head>
+<body>
+    <nav>
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+            <svg width="30" height="30" viewBox="0 0 100 100" fill="none" stroke="#e100ff" stroke-width="4" style="flex-shrink:0;">
+                <circle cx="50" cy="50" r="40" fill="none" />
+                <path d="M30,50 L45,65 L70,35" stroke="#8000ff" stroke-width="6" fill="none"/>
+            </svg>
+            <span class="gradient-text" style="font-size:1.25rem;">MathVision Pro</span>
+        </div>
+        <div>
+            <a href="home.html">Home</a>
+            <a href="calculator.html" style="background: linear-gradient(90deg, #8000ff, #e100ff); padding: 0.4rem 0.8rem; border-radius: 0.5rem; font-weight: 700; color: white; margin-left: 1rem;">Launch Calculator</a>
+        </div>
+    </nav>
+
+  <div class="container">
+    <h2>Latin Square Design ANOVA</h2>
+    
+    <div class="input-group">
+      <input type="number" id="order" placeholder="Order of Latin Square (k)" min="2" value="4">
+    </div>
+    
+    <label>Enter Latin Square data (k×k grid):</label>
+    <div id="data-grid" class="data-input">
+      <!-- Dynamic grid will be inserted here -->
+    </div>
+    
+    <label>Enter Treatment names (A, B, C,...) for each cell:</label>
+    <div id="treatment-grid" class="treatment-input">
+      <!-- Dynamic treatment grid will be inserted here -->
+    </div>
+    
+    <label>Significance level (%):
+      <select id="alpha">
+        <option value="5" selected>5%</option>
+        <option value="1">1%</option>
+      </select>
+    </label>
+    
+    <button class="btn-primary" onclick="calculateLatinSquare()">Calculate ANOVA</button>
+    <div class="output" id="result" style="display:none;"></div>
+  </div>
+  
+  <script>
+    // Critical F-values for α = 0.05
+    const fTable05 = {
+      1: {1:161.4,2:18.51,3:10.13,4:7.71,5:6.61,6:5.99,7:5.59,8:5.32,9:5.12,10:4.96,12:4.75,15:4.54,20:4.35,24:4.26,30:4.17,40:4.08,60:4.00,120:3.92,Infinity:3.84},
+      2: {1:199.5,2:19.00,3:9.55,4:6.94,5:5.79,6:5.14,7:4.74,8:4.46,9:4.26,10:4.10,12:3.89,15:3.68,20:3.49,24:3.40,30:3.32,40:3.23,60:3.15,120:3.07,Infinity:3.00},
+      3: {1:215.7,2:19.16,3:9.28,4:6.59,5:5.41,6:4.76,7:4.35,8:4.07,9:3.86,10:3.71,12:3.49,15:3.29,20:3.10,24:3.01,30:2.92,40:2.84,60:2.76,120:2.68,Infinity:2.60},
+      4: {1:224.6,2:19.25,3:9.12,4:6.39,5:5.19,6:4.53,7:4.12,8:3.84,9:3.63,10:3.48,12:3.26,15:3.06,20:2.87,24:2.78,30:2.69,40:2.61,60:2.53,120:2.45,Infinity:2.37},
+      5: {1:230.2,2:19.30,3:9.01,4:6.26,5:5.05,6:4.39,7:3.97,8:3.69,9:3.48,10:3.33,12:3.11,15:2.90,20:2.71,24:2.62,30:2.53,40:2.45,60:2.37,120:2.29,Infinity:2.21},
+      6: {1:234.0,2:19.33,3:8.94,4:6.16,5:4.95,6:4.28,7:3.87,8:3.58,9:3.37,10:3.22,12:3.00,15:2.79,20:2.60,24:2.51,30:2.42,40:2.34,60:2.25,120:2.17,Infinity:2.10},
+      7: {1:236.8,2:19.35,3:8.89,4:6.09,5:4.88,6:4.21,7:3.79,8:3.50,9:3.29,10:3.14,12:2.91,15:2.71,20:2.51,24:2.42,30:2.33,40:2.25,60:2.17,120:2.09,Infinity:2.01},
+      8: {1:238.9,2:19.37,3:8.85,4:6.04,5:4.82,6:4.15,7:3.73,8:3.44,9:3.23,10:3.07,12:2.85,15:2.64,20:2.45,24:2.36,30:2.27,40:2.18,60:2.10,120:2.02,Infinity:1.94},
+      9: {1:240.5,2:19.38,3:8.81,4:6.00,5:4.77,6:4.10,7:3.68,8:3.39,9:3.18,10:3.02,12:2.80,15:2.59,20:2.39,24:2.30,30:2.21,40:2.12,60:2.04,120:1.96,Infinity:1.88},
+      10:{1:241.9,2:19.40,3:8.79,4:5.96,5:4.74,6:4.06,7:3.64,8:3.35,9:3.14,10:2.98,12:2.75,15:2.54,20:2.35,24:2.25,30:2.16,40:2.08,60:1.99,120:1.91,Infinity:1.83}
+    };
+
+    // Critical F-values for α = 0.01 (1%)
+    const fTable01 = {
+      1: {1:4052,2:98.50,3:34.12,4:21.20,5:16.26,6:13.75,7:12.25,8:11.26,9:10.56,10:10.04,12:9.33,15:8.68,20:8.10,24:7.82,30:7.56,40:7.31,60:7.08,120:6.85,Infinity:6.63},
+      2: {1:4999,2:99.00,3:30.82,4:18.00,5:13.27,6:10.92,7:9.55,8:8.65,9:8.02,10:7.56,12:6.93,15:6.36,20:5.85,24:5.61,30:5.39,40:5.18,60:4.98,120:4.79,Infinity:4.61},
+      3: {1:5403,2:99.17,3:29.46,4:16.69,5:12.06,6:9.78,7:8.45,8:7.59,9:6.99,10:6.55,12:5.95,15:5.42,20:4.94,24:4.72,30:4.51,40:4.31,60:4.13,120:3.95,Infinity:3.78},
+      4: {1:5625,2:99.25,3:28.71,4:15.98,5:11.39,6:9.15,7:7.85,8:7.01,9:6.42,10:5.99,12:5.41,15:4.89,20:4.43,24:4.22,30:4.02,40:3.83,60:3.65,120:3.48,Infinity:3.32},
+      5: {1:5764,2:99.30,3:28.24,4:15.52,5:10.97,6:8.75,7:7.46,8:6.63,9:6.06,10:5.64,12:5.06,15:4.56,20:4.10,24:3.90,30:3.70,40:3.51,60:3.34,120:3.17,Infinity:3.02},
+      6: {1:5859,2:99.33,3:27.91,4:15.21,5:10.67,6:8.47,7:7.19,8:6.37,9:5.80,10:5.39,12:4.82,15:4.32,20:3.87,24:3.67,30:3.47,40:3.29,60:3.12,120:2.96,Infinity:2.80},
+      7: {1:5928,2:99.36,3:27.67,4:14.98,5:10.46,6:8.26,7:6.99,8:6.18,9:5.61,10:5.20,12:4.65,15:4.14,20:3.70,24:3.50,30:3.30,40:3.12,60:2.95,120:2.79,Infinity:2.64},
+      8: {1:5982,2:99.37,3:27.49,4:14.80,5:10.29,6:8.10,7:6.84,8:6.03,9:5.47,10:5.06,12:4.50,15:4.00,20:3.56,24:3.36,30:3.17,40:2.99,60:2.82,120:2.66,Infinity:2.51},
+      9: {1:6022,2:99.39,3:27.35,4:14.66,5:10.16,6:7.98,7:6.72,8:5.91,9:5.35,10:4.94,12:4.39,15:3.89,20:3.46,24:3.26,30:3.07,40:2.89,60:2.72,120:2.56,Infinity:2.41},
+      10:{1:6056,2:99.40,3:27.23,4:14.55,5:10.05,6:7.87,7:6.62,8:5.81,9:5.26,10:4.85,12:4.30,15:3.80,20:3.37,24:3.17,30:2.98,40:2.80,60:2.63,120:2.47,Infinity:2.32}
+    };
+
+    // Helper: find nearest df key less or equal to given df
+    function findNearestKey(df, keys) {
+      const numKeys = keys.map(Number).filter(k => !isNaN(k));
+      if (df >= Math.max(...numKeys)) return Math.max(...numKeys);
+      if (df <= Math.min(...numKeys)) return Math.min(...numKeys);
+      let nearest = Math.min(...numKeys);
+      for (let key of numKeys) {
+        if (key <= df && key > nearest) nearest = key;
+      }
+      return nearest;
+    }
+
+    // Get critical F value from table using numerator and denominator df
+    function getCriticalFValue(dfNumerator, dfDenominator, alpha) {
+      const table = alpha === 5 ? fTable05 : fTable01;
+      const numeratorKeys = Object.keys(table);
+      const nearestNum = findNearestKey(dfNumerator, numeratorKeys);
+      const denominatorKeys = Object.keys(table[nearestNum]);
+      const nearestDen = findNearestKey(dfDenominator, denominatorKeys);
+      return table[nearestNum][nearestDen];
+    }
+
+    // Create input grid based on order
+    document.getElementById('order').addEventListener('input', function() {
+      const k = parseInt(this.value);
+      if (k < 2) return;
+      
+      const gridContainer = document.getElementById('data-grid');
+      const treatmentContainer = document.getElementById('treatment-grid');
+      gridContainer.innerHTML = '';
+      treatmentContainer.innerHTML = '';
+      
+      // Create k×k grid of inputs
+      for (let i = 0; i < k; i++) {
+        for (let j = 0; j < k; j++) {
+          // Data value input
+          const input = document.createElement('input');
+          input.type = 'number';
+          input.placeholder = `Row ${i+1}, Col ${j+1}`;
+          input.dataset.row = i;
+          input.dataset.col = j;
+          gridContainer.appendChild(input);
+          
+          // Treatment name input
+          const treatmentInput = document.createElement('input');
+          treatmentInput.type = 'text';
+          treatmentInput.placeholder = `Treatment`;
+          treatmentInput.dataset.row = i;
+          treatmentInput.dataset.col = j;
+          treatmentInput.maxLength = 1;
+          treatmentInput.pattern = '[A-Za-z]';
+          treatmentInput.title = 'Enter single letter (A-Z)';
+          treatmentContainer.appendChild(treatmentInput);
+        }
+      }
+    });
+    
+    // Trigger initial grid creation
+    document.getElementById('order').dispatchEvent(new Event('input'));
+    
+    function calculateLatinSquare() {
+      const k = parseInt(document.getElementById('order').value);
+      const alpha = parseInt(document.getElementById('alpha').value);
+      const output = document.getElementById('result');
+      
+      // Get data from grid
+      const dataInputs = document.querySelectorAll('#data-grid input');
+      const treatmentInputs = document.querySelectorAll('#treatment-grid input');
+      const data = Array(k).fill().map(() => Array(k).fill(0));
+      const treatments = Array(k).fill().map(() => Array(k).fill(''));
+      let allFilled = true;
+      
+      // Validate and collect data
+      for (let i = 0; i < k; i++) {
+        for (let j = 0; j < k; j++) {
+          const idx = i * k + j;
+          const value = parseFloat(dataInputs[idx].value);
+          const treatment = treatmentInputs[idx].value.toUpperCase();
+          
+          if (isNaN(value) || !treatment.match(/^[A-Z]$/)) {
+            allFilled = false;
+            if (isNaN(value)) dataInputs[idx].style.borderColor = '#ff6bcb';
+            if (!treatment.match(/^[A-Z]$/)) treatmentInputs[idx].style.borderColor = '#ff6bcb';
+          } else {
+            data[i][j] = value;
+            treatments[i][j] = treatment;
+            dataInputs[idx].style.borderColor = '#e100ff33';
+            treatmentInputs[idx].style.borderColor = '#e100ff33';
+          }
+        }
+      }
+      
+      if (!allFilled) {
+        output.style.display = 'block';
+        output.innerHTML = `<span style="color:#ff6bcb;">Please fill in all cells with numeric values and single-letter treatment names (A-Z).</span>`;
+        return;
+      }
+      
+      // Calculate totals
+      let totalSum = 0;
+      const rowSums = Array(k).fill(0);
+      const colSums = Array(k).fill(0);
+      const treatmentSums = {};
+      const treatmentCounts = {};
+      
+      // Calculate row sums, column sums, and treatment sums
+      for (let i = 0; i < k; i++) {
+        for (let j = 0; j < k; j++) {
+          const value = data[i][j];
+          totalSum += value;
+          rowSums[i] += value;
+          colSums[j] += value;
+          
+          const treatment = treatments[i][j];
+          treatmentSums[treatment] = (treatmentSums[treatment] || 0) + value;
+          treatmentCounts[treatment] = (treatmentCounts[treatment] || 0) + 1;
+        }
+      }
+      
+      // Verify each treatment appears exactly k times
+      const uniqueTreatments = Object.keys(treatmentSums);
+      if (uniqueTreatments.length !== k) {
+        output.style.display = 'block';
+        output.innerHTML = `<span style="color:#ff6bcb;">Error: There should be exactly ${k} unique treatments (found ${uniqueTreatments.length}).</span>`;
+        return;
+      }
+      
+      for (const tr of uniqueTreatments) {
+        if (treatmentCounts[tr] !== k) {
+          output.style.display = 'block';
+          output.innerHTML = `<span style="color:#ff6bcb;">Error: Each treatment should appear exactly ${k} times (treatment ${tr} appears ${treatmentCounts[tr]} times).</span>`;
+          return;
+        }
+      }
+      
+      const grandMean = totalSum / (k * k);
+      
+      // Calculate Sum of Squares
+      // Total SS
+      let SST = 0;
+      for (let i = 0; i < k; i++) {
+        for (let j = 0; j < k; j++) {
+          SST += Math.pow(data[i][j] - grandMean, 2);
+        }
+      }
+      
+      // Row SS
+      let SSR = 0;
+      for (let i = 0; i < k; i++) {
+        SSR += k * Math.pow(rowSums[i]/k - grandMean, 2);
+      }
+      
+      // Column SS
+      let SSC = 0;
+      for (let j = 0; j < k; j++) {
+        SSC += k * Math.pow(colSums[j]/k - grandMean, 2);
+      }
+      
+      // Treatment SS (SSK)
+      let SSTr = 0;
+      for (const tr of uniqueTreatments) {
+        SSTr += k * Math.pow(treatmentSums[tr]/k - grandMean, 2);
+      }
+      
+      // Error SS
+      const SSE = SST - SSR - SSC - SSTr;
+      
+      // Degrees of freedom
+      const dfRows = k - 1;
+      const dfCols = k - 1;
+      const dfTr = k - 1;
+      const dfError = (k - 1) * (k - 2);
+      const dfTotal = k * k - 1;
+      
+      // Mean Squares
+      const MSR = SSR / dfRows;
+      const MSC = SSC / dfCols;
+      const MSTr = SSTr / dfTr;
+      const MSE = SSE / dfError;
+      
+      // Calculate F-ratios with requested conditions
+      // For Columns
+      let FC, FC_numerator, FC_denominator, FC_df_num, FC_df_den;
+      if (MSE > MSC) {
+        FC = MSE / MSC;
+        FC_numerator = "MSE";
+        FC_denominator = "MSC";
+        FC_df_num = dfError;
+        FC_df_den = dfCols;
+      } else {
+        FC = MSC / MSE;
+        FC_numerator = "MSC";
+        FC_denominator = "MSE";
+        FC_df_num = dfCols;
+        FC_df_den = dfError;
+      }
+      
+      // For Rows
+      let FR, FR_numerator, FR_denominator, FR_df_num, FR_df_den;
+      if (MSE > MSR) {
+        FR = MSE / MSR;
+        FR_numerator = "MSE";
+        FR_denominator = "MSR";
+        FR_df_num = dfError;
+        FR_df_den = dfRows;
+      } else {
+        FR = MSR / MSE;
+        FR_numerator = "MSR";
+        FR_denominator = "MSE";
+        FR_df_num = dfRows;
+        FR_df_den = dfError;
+      }
+      
+      // For Treatments
+      let FTr, FTr_numerator, FTr_denominator, FTr_df_num, FTr_df_den;
+      if (MSE > MSTr) {
+        FTr = MSE / MSTr;
+        FTr_numerator = "MSE";
+        FTr_denominator = "MSTr";
+        FTr_df_num = dfError;
+        FTr_df_den = dfTr;
+      } else {
+        FTr = MSTr / MSE;
+        FTr_numerator = "MSTr";
+        FTr_denominator = "MSE";
+        FTr_df_num = dfTr;
+        FTr_df_den = dfError;
+      }
+      
+      // Get critical F values
+      const FCriticalRows = getCriticalFValue(FR_df_num, FR_df_den, alpha);
+      const FCriticalCols = getCriticalFValue(FC_df_num, FC_df_den, alpha);
+      const FCriticalTr = getCriticalFValue(FTr_df_num, FTr_df_den, alpha);
+      
+      // Hypothesis decisions
+      const rowDecision = FR >= FCriticalRows ? 'Reject the null hypothesis' : 'Fail to reject the null hypothesis';
+      const colDecision = FC >= FCriticalCols ? 'Reject the null hypothesis' : 'Fail to reject the null hypothesis';
+      const trDecision = FTr >= FCriticalTr ? 'Reject the null hypothesis' : 'Fail to reject the null hypothesis';
+      
+      const rowDecisionClass = FR >= FCriticalRows ? 'reject' : 'accept';
+      const colDecisionClass = FC >= FCriticalCols ? 'reject' : 'accept';
+      const trDecisionClass = FTr >= FCriticalTr ? 'reject' : 'accept';
+      
+      // Format output
+      output.style.display = 'block';
+      output.innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Source of Variation</th>
+              <th>Sum of Squares</th>
+              <th>Degrees of Freedom</th>
+              <th>Mean Square</th>
+              <th>F-ratio</th>
+              <th>Critical F (α=${alpha}%)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Between Rows</td>
+              <td>${SSR.toFixed(4)}</td>
+              <td>${dfRows}</td>
+              <td>${MSR.toFixed(4)}</td>
+              <td>${FR.toFixed(4)} (${FR_numerator}/${FR_denominator})</td>
+              <td>${FCriticalRows.toFixed(4)} (F(${FR_df_num},${FR_df_den}))</td>
+            </tr>
+            <tr>
+              <td>Between Columns</td>
+              <td>${SSC.toFixed(4)}</td>
+              <td>${dfCols}</td>
+              <td>${MSC.toFixed(4)}</td>
+              <td>${FC.toFixed(4)} (${FC_numerator}/${FC_denominator})</td>
+              <td>${FCriticalCols.toFixed(4)} (F(${FC_df_num},${FC_df_den}))</td>
+            </tr>
+            <tr>
+              <td>Between Treatments</td>
+              <td>${SSTr.toFixed(4)}</td>
+              <td>${dfTr}</td>
+              <td>${MSTr.toFixed(4)}</td>
+              <td>${FTr.toFixed(4)} (${FTr_numerator}/${FTr_denominator})</td>
+              <td>${FCriticalTr.toFixed(4)} (F(${FTr_df_num},${FTr_df_den}))</td>
+            </tr>
+            <tr>
+              <td>Error</td>
+              <td>${SSE.toFixed(4)}</td>
+              <td>${dfError}</td>
+              <td>${MSE.toFixed(4)}</td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><strong>Total</strong></td>
+              <td><strong>${SST.toFixed(4)}</strong></td>
+              <td><strong>${dfTotal}</strong></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <div class="decision ${rowDecisionClass}">
+          Row Effect: ${rowDecision} <br>
+          (F = ${FR.toFixed(4)} ${FR >= FCriticalRows ? '≥' : '<'} ${FCriticalRows.toFixed(4)}, 
+          df = (${FR_df_num}, ${FR_df_den}))
+        </div>
+        
+        <div class="decision ${colDecisionClass}">
+          Column Effect: ${colDecision} <br>
+          (F = ${FC.toFixed(4)} ${FC >= FCriticalCols ? '≥' : '<'} ${FCriticalCols.toFixed(4)}, 
+          df = (${FC_df_num}, ${FC_df_den}))
+        </div>
+        
+        <div class="decision ${trDecisionClass}">
+          Treatment Effect: ${trDecision} <br>
+          (F = ${FTr.toFixed(4)} ${FTr >= FCriticalTr ? '≥' : '<'} ${FCriticalTr.toFixed(4)}, 
+          df = (${FTr_df_num}, ${FTr_df_den}))
+        </div>
+        
+        <div class="note">
+          <b>F-Ratio Calculation:</b> For each effect, if MSE > MS_effect then F = MSE/MS_effect, else F = MS_effect/MSE
+        </div>
+        
+        <div class="note">
+          <b>Critical F Values:</b> Looked up from F-table using numerator df and denominator df based on F-ratio calculation
+        </div>
+        
+        <div class="note">
+          <b>Interpretation:</b> For each effect, if F ≥ Critical F (or p ≤ α), we reject H₀ (no effect)
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>

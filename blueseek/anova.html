@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ANOVA Selection | MathVision Pro</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: #0c0a19;
+            color: #fff;
+            margin: 0;
+            min-height: 100vh;
+        }
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 2rem 1.2rem 2rem;
+            background: #16052b;
+            box-shadow: 0 2px 16px 0 #8000ff22;
+        }
+        nav .gradient-text {
+            background: linear-gradient(90deg, #8000ff, #e100ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: bold;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin-left: 1rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        nav a:hover {
+            color: #e100ff;
+        }
+        nav .launch-btn {
+            background: linear-gradient(90deg, #8000ff, #e100ff);
+            padding: 0.4rem 0.8rem;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            color: white;
+            margin-left: 1rem;
+            border: none;
+            cursor: pointer;
+            transition: box-shadow 0.2s;
+        }
+        nav .launch-btn:hover {
+            box-shadow: 0 4px 16px #e100ff55;
+        }
+        .hero-gradient {
+            padding: 4rem 0 2rem 0;
+            text-align: center;
+            background: radial-gradient(circle at 50% 0%, #2c0735 0%, #16052b 70%);
+        }
+        .hero-gradient h1 {
+            margin: 0;
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, #8000ff, #e100ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .hero-gradient p {
+            margin: 1rem auto 0 auto;
+            color: #e9d5ff;
+            max-width: 42rem;
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+        
+        /* Cards layout */
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            padding: 2rem;
+            margin: -3rem auto 4rem auto;
+        }
+        
+        .card {
+            background: linear-gradient(135deg, #2c0735 0%, #1c0631 50%, #16052b 100%);
+            border-radius: 1.5rem;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 8px 32px 0 #8000ff33;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            position: relative;
+            height: 100%; /* Ensure all cards have the same height */
+        }
+        
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 16px 48px 0 #8000ff55;
+        }
+        
+        .card-image {
+            width: 100%;
+            height: 160px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .card-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(12,10,25,0) 0%, rgba(12,10,25,0.8) 100%);
+        }
+        
+        .card-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .card h3 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            background: linear-gradient(90deg, #8000ff, #e100ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .card p {
+            margin: 0.8rem 0 1.2rem 0;
+            line-height: 1.5;
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto; /* Push footer to bottom of card */
+        }
+        
+        .difficulty {
+            display: flex;
+            align-items: center;
+        }
+        
+        .difficulty-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 3px;
+        }
+        
+        .dot-filled {
+            background: linear-gradient(90deg, #8000ff, #e100ff);
+        }
+        
+        .dot-empty {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .explore-btn {
+            background: linear-gradient(90deg, #8000ff, #e100ff);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: box-shadow 0.2s;
+        }
+        
+        .explore-btn:hover {
+            box-shadow: 0 4px 16px #e100ff55;
+        }
+        
+        /* Animation for cards */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .card {
+            animation: fadeUp 0.6s ease forwards;
+            opacity: 0;
+        }
+        
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        .card:nth-child(4) { animation-delay: 0.4s; }
+        .card:nth-child(5) { animation-delay: 0.5s; }
+        
+        /* Glow effect when hovering */
+        .card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 1.5rem;
+            padding: 2px;
+            background: linear-gradient(45deg, #8000ff33, #e100ff33, #8000ff33);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .card:hover::after {
+            opacity: 1;
+        }
+
+        /* Interactive formula preview */
+        .formula-preview {
+            background: rgba(255,255,255,0.05);
+            border-radius: 0.5rem;
+            padding: 0.8rem;
+            margin-top: 0.5rem;
+            font-family: 'Latin Modern Math', serif;
+            text-align: center;
+            overflow-x: auto;
+            transition: all 0.3s;
+        }
+        
+        .card:hover .formula-preview {
+            background: rgba(255,255,255,0.1);
+            transform: scale(1.02);
+        }
+        
+        /* Footer */
+        footer {
+            background: #16052b;
+            padding: 2rem;
+            text-align: center;
+            color: rgba(255,255,255,0.7);
+        }
+        
+        footer .gradient-text {
+            background: linear-gradient(90deg, #8000ff, #e100ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .cards-container {
+                grid-template-columns: 1fr;
+                padding: 1.5rem;
+            }
+            
+            .hero-gradient h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero-gradient p {
+                font-size: 1rem;
+                padding: 0 1rem;
+            }
+            
+            nav {
+                flex-direction: column;
+                gap: 0.8rem;
+                padding: 1rem;
+            }
+            
+            nav div:last-child {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.5rem;
+            }
+            
+            nav a {
+                margin: 0 0.5rem;
+            }
+        }
+        
+        /* Floating particles animation */
+        .particles-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+            <svg width="30" height="30" viewBox="0 0 100 100" fill="none" stroke="#e100ff" stroke-width="4" style="flex-shrink:0;">
+                <circle cx="50" cy="50" r="40" fill="none" />
+                <path d="M30,50 L45,65 L70,35" stroke="#8000ff" stroke-width="6" fill="none"/>
+            </svg>
+            <span class="gradient-text" style="font-size:1.25rem;">MathVision Pro</span>
+        </div>
+        <div>
+            <a href="home.html">Home</a>
+            <a href="calculator.html" class="launch-btn">Launch Calculator</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-gradient">
+        <div class="particles-container" id="particles-container"></div>
+        <h1>Analysis of Variance</h1>
+        <p>Explore different ANOVA methods to analyze variation among group means and their associated procedures. 
+           Select the design that best fits your experimental setup.</p>
+    </div>
+
+    <!-- Cards Section -->
+<div class="cards-container" style="grid-template-columns: repeat(3, 1fr);">
+    <!-- One-Way ANOVA -->
+    <div class="card" onclick="navigateToAnovaType('oneway.html')">
+        <div class="card-image" style="background-image: url('./ONEWAYP.JPG')">
+            <div class="card-overlay"></div>
+        </div>
+        <div class="card-content">
+            <div>
+                <h3>One-Way ANOVA</h3>
+                <p>Compare means across one categorical independent variable with multiple groups. Perfect for simple experiments with a single factor.</p>
+            </div>
+            <div class="card-footer">
+                <div class="difficulty">
+                    <div class="difficulty-dot dot-filled"></div>
+                    <div class="difficulty-dot dot-filled"></div>
+                    <div class="difficulty-dot dot-empty"></div>
+                    <div class="difficulty-dot dot-empty"></div>
+                    <div class="difficulty-dot dot-empty"></div>
+                    <span style="margin-left:5px; font-size:0.8rem; color:rgba(255,255,255,0.7)">Beginner</span>
+                </div>
+                <button class="explore-btn">Explore</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Two-Way ANOVA -->
+    <div class="card" onclick="navigateToAnovaType('twoway.html')">
+        <div class="card-image" style="background-image: url('./TWOWAYP.JPG')">
+            <div class="card-overlay"></div>
+        </div>
+        <div class="card-content">
+            <div>
+                <h3>Two-Way Classification</h3>
+                <p>Examine the influence of two different categorical independent variables on one dependent variable, including potential interaction effects.</p>
+            </div>
+            <div class="card-footer">
+                <div class="difficulty">
+                    <div class="difficulty-dot dot-filled"></div>
+                    <div class="difficulty-dot dot-filled"></div>
+                    <div class="difficulty-dot dot-filled"></div>
+                    <div class="difficulty-dot dot-filled"></div>
+                    <div class="difficulty-dot dot-empty"></div>
+                    <span style="margin-left:5px; font-size:0.8rem; color:rgba(255,255,255,0.7)">Advanced</span>
+                </div>
+                <button class="explore-btn">Explore</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Factorial Design -->
+    <div class="card" onclick="navigateToAnovaType('2square.html')">
+        <div class="card-image" style="background-image: url('./2SQUAREP.JPG')">
+            <div class="card-overlay"></div>
+        </div>
+        <div class="card-content">
+            <div>
+                <h3>Two-Square Factorial Design</h3>
+                <p>Study the effects of multiple factors simultaneously, including all possible combinations of factor levels and their interaction effects.</p>
+            </div>
+            <div class="card-footer">
+                <div class="difficulty">
+                    <div class="difficulty-dot dot-filled"></div>
+                    <div class="difficulty-dot dot-filled"></div>
+                    <div class="difficulty-dot dot-filled"></div>
+                    <div class="difficulty-dot dot-filled"></div>
+                    <div class="difficulty-dot dot-filled"></div>
+                    <span style="margin-left:5px; font-size:0.8rem; color:rgba(255,255,255,0.7)">Expert</span>
+                </div>
+                <button class="explore-btn">Explore</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Latin Square Design (Centered) -->
+<div style="display: flex; justify-content: center; margin: 0 auto 4rem auto; max-width: 1200px; padding: 0 2rem;">
+    <div class="card" onclick="navigateToAnovaType('latin.html')" style="width: 100%; max-width: 400px;">
+        <div class="card-image" style="background-image: url('./LATINP.JPG')">
+            <div class="card-overlay"></div>
+        </div>
+        <div class="card-content">
+            <div>
+                <h3>Latin Square Design</h3>
+                <p>Control two extraneous sources of variability using a specialized balanced design where each treatment appears exactly once in each row and column.</p>
+            </div>
+            <div class="card-footer">
+                <div class="difficulty">
+                    <div class="difficulty-dot dot-filled"></div>
+                    <div class="difficulty-dot dot-filled"></div>
+                    <div class="difficulty-dot dot-filled"></div>
+                    <div class="difficulty-dot dot-filled"></div>
+                    <div class="difficulty-dot dot-filled"></div>
+                    <span style="margin-left:5px; font-size:0.8rem; color:rgba(255,255,255,0.7)">Expert</span>
+                </div>
+                <button class="explore-btn">Explore</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Footer -->
+    <footer>
+        <div style="display:flex; align-items:center; justify-content:center; gap:0.5rem; margin-bottom:1rem;">
+            <svg width="20" height="20" viewBox="0 0 100 100" fill="none" stroke="#e100ff" stroke-width="4">
+                <circle cx="50" cy="50" r="40" fill="none" />
+                <path d="M30,50 L45,65 L70,35" stroke="#8000ff" stroke-width="6" fill="none"/>
+            </svg>
+            <span class="gradient-text">MathVision Pro</span>
+        </div>
+        <p>Advanced statistical analysis tools for researchers and students</p>
+        <p style="margin-top:1rem; font-size:0.8rem;">© 2025 MathVision Pro. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Navigation function
+        function navigateToAnovaType(page) {
+            window.location.href = page;
+        }
+        
+        // Create animated particles
+        function createParticles() {
+            const container = document.getElementById('particles-container');
+            const colors = ['#8000ff33', '#e100ff33', '#ffffff11'];
+            
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // Random properties
+                const size = Math.random() * 8 + 3;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                
+                // Set styles
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.backgroundColor = color;
+                
+                // Random position
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                particle.style.left = `${posX}%`;
+                particle.style.top = `${posY}%`;
+                
+                // Animation
+                const duration = Math.random() * 30 + 10;
+                const delay = Math.random() * 5;
+                
+                particle.style.animation = `float ${duration}s ${delay}s infinite linear`;
+                
+                // Add to container
+                container.appendChild(particle);
+                
+                // Create floating animation
+                const keyframes = `
+                @keyframes float {
+                    0% {
+                        transform: translate(0, 0) rotate(0deg);
+                    }
+                    25% {
+                        transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px) rotate(${Math.random() * 360}deg);
+                    }
+                    50% {
+                        transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px) rotate(${Math.random() * 360}deg);
+                    }
+                    75% {
+                        transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px) rotate(${Math.random() * 360}deg);
+                    }
+                    100% {
+                        transform: translate(0, 0) rotate(0deg);
+                    }
+                }`;
+                
+                const style = document.createElement('style');
+                style.innerHTML = keyframes;
+                document.head.appendChild(style);
+            }
+        }
+        
+        // Initialize on page load
+        window.addEventListener('load', () => {
+            createParticles();
+            
+            // Add mathematics rendering if MathJax is available
+            if (window.MathJax) {
+                MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+            } else {
+                // Attempt to load MathJax if not available
+                const script = document.createElement('script');
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML';
+                script.async = true;
+                document.head.appendChild(script);
+                
+                script.onload = function() {
+                    MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+                };
+            }
+        });
+    </script>
+</body>
+</html>

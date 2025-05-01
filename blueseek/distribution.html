@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Probability Distributions | MathVision Pro</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: #0c0a19;
+            color: #fff;
+            margin: 0;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 480px;
+            margin: 60px auto;
+            background: linear-gradient(135deg, #2c0735 0%, #1c0631 50%, #16052b 100%);
+            border-radius: 2rem;
+            padding: 2rem 2.5rem;
+            box-shadow: 0 8px 48px 0 #8000ff33;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(90deg, #8000ff, #e100ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.7rem;
+        }
+        .tab {
+            padding: 0.6rem 1.2rem;
+            border-radius: 1.2rem;
+            cursor: pointer;
+            background: rgba(255,255,255,0.07);
+            color: #fff;
+            font-weight: 500;
+            transition: background 0.2s;
+            user-select: none;
+        }
+        .tab.active {
+            background: linear-gradient(90deg, #8000ff, #e100ff);
+            color: #fff;
+        }
+        label {
+            display: block;
+            margin: 1rem 0 0.3rem 0;
+            font-weight: 500;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 0.7rem;
+            border-radius: 0.5rem;
+            border: 1px solid #e100ff33;
+            background: rgba(255,255,255,0.07);
+            color: #fff;
+            font-size: 1.1rem;
+            outline-offset: 2px;
+            outline-color: transparent;
+            transition: outline-color 0.2s;
+        }
+        input[type="number"]:focus {
+            outline-color: #e100ff;
+            background: rgba(255,255,255,0.12);
+        }
+        .btn-primary {
+            margin-top: 1.2rem;
+            width: 100%;
+            padding: 0.8rem 0;
+            border: none;
+            border-radius: 0.6rem;
+            background: linear-gradient(90deg, #8000ff, #e100ff);
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: box-shadow 0.3s;
+            box-shadow: 0 4px 20px -1px #8000ff44;
+        }
+        .btn-primary:hover {
+            box-shadow: 0 8px 32px -2px #e100ff55;
+        }
+        .output {
+            background: rgba(255,255,255,0.07);
+            border-radius: 0.7rem;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            box-shadow: 0 2px 12px 0 #8000ff22;
+            font-size: 1.1rem;
+            line-height: 1.4;
+        }
+        .curve {
+            margin-top: 1.2rem;
+            width: 100%;
+            height: 80px;
+            background: transparent;
+            display: block;
+        }
+        /* Navigation bar styles (simplified) */
+        nav {
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 2px 10px rgba(128,0,255,0.5);
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: #ddd;
+        }
+        nav a {
+            color: #ddd;
+            text-decoration: none;
+            margin-left: 1rem;
+            transition: color 0.3s;
+        }
+        nav a:hover {
+            color: #e100ff;
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #8000ff, #e100ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+            <svg width="30" height="30" viewBox="0 0 100 100" fill="none" stroke="#e100ff" stroke-width="4" style="flex-shrink:0;">
+                <circle cx="50" cy="50" r="40" fill="none" />
+                <path d="M30,50 L45,65 L70,35" stroke="#8000ff" stroke-width="6" fill="none"/>
+            </svg>
+            <span class="gradient-text" style="font-size:1.25rem;">MathVision Pro</span>
+        </div>
+        <div>
+            <a href="home.html">Home</a>
+            <a href="calculator.html" style="background: linear-gradient(90deg, #8000ff, #e100ff); padding: 0.4rem 0.8rem; border-radius: 0.5rem; font-weight: 700; color: white; margin-left: 1rem;">Launch Calculator</a>
+        </div>
+    </nav>
+
+    <!-- Calculator Header -->
+    <div class="hero-gradient" style="background: linear-gradient(135deg, #2c0735 0%, #1c0631 50%, #16052b 100%); padding: 4rem 1rem; text-align:center;">
+        <h1 class="gradient-text" style="font-size: 2.5rem; font-weight: 800; margin: 0;">Probability Distributions</h1>
+    </div>
+
+    <div class="container" role="main" aria-label="Probability Distributions Calculator">
+        <h2>Probability Distributions</h2>
+        <div class="tabs" role="tablist" aria-label="Distribution Tabs">
+            <div class="tab active" id="tab-binomial" role="tab" tabindex="0" aria-selected="true" aria-controls="binomial-panel" onclick="showTab('binomial')">Binomial</div>
+            <div class="tab" id="tab-normal" role="tab" tabindex="-1" aria-selected="false" aria-controls="normal-panel" onclick="showTab('normal')">Normal</div>
+        </div>
+
+        <!-- Binomial Panel -->
+        <section id="binomial-panel" role="tabpanel" aria-labelledby="tab-binomial">
+            <label for="n">n (trials):</label>
+            <input id="n" type="number" min="1" value="10" aria-describedby="n-desc" />
+            <label for="p">p (success probability):</label>
+            <input id="p" type="number" min="0" max="1" step="0.01" value="0.3" aria-describedby="p-desc" />
+            <label for="k">k (successes):</label>
+            <input id="k" type="number" min="0" value="4" aria-describedby="k-desc" />
+            <button class="btn-primary" onclick="calcBinomial()" aria-label="Compute Binomial probabilities">Compute</button>
+            <div class="output" id="binomial-output" aria-live="polite" aria-atomic="true"></div>
+        </section>
+
+        <!-- Normal Panel -->
+        <section id="normal-panel" role="tabpanel" aria-labelledby="tab-normal" style="display:none;">
+            <label for="mu">μ (mean):</label>
+            <input id="mu" type="number" value="0" />
+            <label for="sigma">σ (std dev):</label>
+            <input id="sigma" type="number" min="0.01" value="1" />
+            <label for="x">x:</label>
+            <input id="x" type="number" value="1" />
+            <button class="btn-primary" onclick="calcNormal()" aria-label="Compute Normal distribution values">Compute</button>
+            <div class="output" id="normal-output" aria-live="polite" aria-atomic="true"></div>
+            <canvas class="curve" id="curve" aria-label="Normal distribution bell curve"></canvas>
+        </section>
+    </div>
+
+    <script>
+        // Tab switching logic with keyboard accessibility
+        function showTab(tab) {
+            const tabs = ['binomial', 'normal'];
+            tabs.forEach(t => {
+                const tabBtn = document.getElementById('tab-' + t);
+                const panel = document.getElementById(t + '-panel');
+                if (t === tab) {
+                    tabBtn.classList.add('active');
+                    tabBtn.setAttribute('aria-selected', 'true');
+                    tabBtn.setAttribute('tabindex', '0');
+                    panel.style.display = '';
+                } else {
+                    tabBtn.classList.remove('active');
+                    tabBtn.setAttribute('aria-selected', 'false');
+                    tabBtn.setAttribute('tabindex', '-1');
+                    panel.style.display = 'none';
+                }
+            });
+            if (tab === 'normal') {
+                drawCurve();
+            }
+        }
+
+        // Factorial function with memoization for performance
+        const factorialCache = {};
+        function factorial(n) {
+            if (n < 0) return NaN;
+            if (n === 0 || n === 1) return 1;
+            if (factorialCache[n]) return factorialCache[n];
+            factorialCache[n] = n * factorial(n - 1);
+            return factorialCache[n];
+        }
+
+        // Binomial coefficient function
+        function binom(n, k) {
+            if (k > n || k < 0) return 0;
+            return factorial(n) / (factorial(k) * factorial(n - k));
+        }
+
+        // Calculate Binomial probabilities
+        function calcBinomial() {
+            const n = parseInt(document.getElementById('n').value);
+            const p = parseFloat(document.getElementById('p').value);
+            const k = parseInt(document.getElementById('k').value);
+
+            const output = document.getElementById('binomial-output');
+
+            if (
+                isNaN(n) || isNaN(p) || isNaN(k) ||
+                n < 1 || p < 0 || p > 1 || k < 0 || k > n
+            ) {
+                output.innerHTML = '<span style="color:#ff6b6b;">Enter valid parameters.</span>';
+                return;
+            }
+
+            // P(X = k)
+            const prob = binom(n, k) * Math.pow(p, k) * Math.pow(1 - p, n - k);
+
+            // P(X ≤ k)
+            let cdf = 0;
+            for (let i = 0; i <= k; i++) {
+                cdf += binom(n, i) * Math.pow(p, i) * Math.pow(1 - p, n - i);
+            }
+
+            output.innerHTML = `
+                <div><strong>P(X = ${k}):</strong> ${prob.toFixed(4)}</div>
+                <div><strong>P(X ≤ ${k}):</strong> ${cdf.toFixed(4)}</div>
+            `;
+        }
+
+        // Error function approximation for normal CDF
+        function erf(x) {
+            const sign = x < 0 ? -1 : 1;
+            x = Math.abs(x);
+            const t = 1 / (1 + 0.3275911 * x);
+            const a1 = 0.254829592;
+            const a2 = -0.284496736;
+            const a3 = 1.421413741;
+            const a4 = -1.453152027;
+            const a5 = 1.061405429;
+            const y = 1 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
+            return sign * y;
+        }
+
+        // Normal cumulative distribution function
+        function normalCDF(x, mu, sigma) {
+            return 0.5 * (1 + erf((x - mu) / (sigma * Math.sqrt(2))));
+        }
+
+        // Calculate Normal distribution probabilities and Z-score
+        function calcNormal() {
+            const mu = parseFloat(document.getElementById('mu').value);
+            const sigma = parseFloat(document.getElementById('sigma').value);
+            const x = parseFloat(document.getElementById('x').value);
+
+            const output = document.getElementById('normal-output');
+
+            if (isNaN(mu) || isNaN(sigma) || isNaN(x) || sigma <= 0) {
+                output.innerHTML = '<span style="color:#ff6b6b;">Enter valid parameters.</span>';
+                return;
+            }
+
+            const cdf = normalCDF(x, mu, sigma);
+            const z = (x - mu) / sigma;
+
+            output.innerHTML = `
+                <div><strong>P(X ≤ ${x}):</strong> ${cdf.toFixed(4)}</div>
+                <div><strong>Z-score:</strong> ${z.toFixed(3)}</div>
+            `;
+
+            drawCurve(mu, sigma, x);
+        }
+
+        // Draw Normal distribution bell curve on canvas
+        function drawCurve(mu = 0, sigma = 1, x = null) {
+            const canvas = document.getElementById('curve');
+            const ctx = canvas.getContext('2d');
+
+            // Set canvas size to match CSS size for crispness
+            canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+            canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const width = canvas.offsetWidth;
+            const height = canvas.offsetHeight;
+
+            // Draw bell curve
+            ctx.beginPath();
+            for (let i = 0; i <= width; i++) {
+                // Map i to X in range [mu - 3*sigma, mu + 3*sigma]
+                const X = mu - 3 * sigma + (6 * sigma * i) / width;
+                // Normal PDF formula
+                const Y = (1 / (sigma * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((X - mu) / sigma, 2));
+                // Scale Y to canvas height (multiply by factor for visibility)
+                const y = height - Y * height * 5;
+                if (i === 0) ctx.moveTo(i, y);
+                else ctx.lineTo(i, y);
+            }
+            ctx.strokeStyle = '#e100ff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Draw vertical dashed line at x if provided
+            if (x !== null) {
+                const px = ((x - (mu - 3 * sigma)) / (6 * sigma)) * width;
+                ctx.beginPath();
+                ctx.moveTo(px, 0);
+                ctx.lineTo(px, height);
+                ctx.strokeStyle = '#fff';
+                ctx.setLineDash([5, 5]);
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+        }
+
+        // Initialize curve on page load
+        window.onload = () => {
+            showTab('binomial'); // Show binomial tab by default
+            drawCurve(); // Draw default normal curve
+        };
+        
+    </script>
+</body>
+</html>

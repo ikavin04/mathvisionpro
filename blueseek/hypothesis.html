@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Hypothesis Testing | MathVision Pro</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background-color: #0c0a19;
+    color: #fff;
+    margin: 0;
+    min-height: 100vh;
+  }
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: rgba(12, 10, 25, 0.8);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 1.5rem;
+    font-weight: 500;
+  }
+  .container {
+    max-width: 540px;
+    margin: 60px auto;
+    background: linear-gradient(135deg, #2c0735 0%, #1c0631 50%, #16052b 100%);
+    border-radius: 2rem;
+    padding: 2rem 2.5rem;
+    box-shadow: 0 8px 48px 0 #8000ff33;
+  }
+  h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(90deg, #8000ff, #e100ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .btn-group {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .btn-option {
+    flex: 1;
+    padding: 0.6rem 1rem;
+    border-radius: 0.6rem;
+    background: rgba(255,255,255,0.1);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    user-select: none;
+    transition: background 0.3s;
+    border: 2px solid transparent;
+  }
+  .btn-option.active {
+    background: #000;
+    border-color: #e100ff;
+    box-shadow: 0 0 8px #e100ff;
+  }
+  .btn-option.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  label {
+    display: block;
+    margin: 1rem 0 0.3rem 0;
+    font-weight: 500;
+  }
+  input[type="number"], select {
+    width: 100%;
+    padding: 0.7rem;
+    border-radius: 0.5rem;
+    border: 1px solid #e100ff33;
+    background: rgba(255,255,255,0.07);
+    color: #fff;
+    font-size: 1.1rem;
+  }
+  .btn-primary {
+    margin-top: 1.2rem;
+    width: 100%;
+    padding: 0.8rem 0;
+    border: none;
+    border-radius: 0.6rem;
+    background: linear-gradient(90deg, #8000ff, #e100ff);
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: box-shadow 0.3s;
+    box-shadow: 0 4px 20px -1px #8000ff44;
+  }
+  .btn-primary:hover {
+    box-shadow: 0 8px 32px -2px #e100ff55;
+  }
+  .output {
+    background: rgba(255,255,255,0.07);
+    border-radius: 0.7rem;
+    padding: 1rem;
+    margin-top: 1.5rem;
+    box-shadow: 0 2px 12px 0 #8000ff22;
+  }
+  .result-summary {
+    margin-top: 1rem;
+    padding: 0.8rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  .reject {
+    background: rgba(224, 0, 255, 0.15);
+    border: 1px solid rgba(224, 0, 255, 0.3);
+  }
+  .accept {
+    background: rgba(128, 0, 255, 0.15);
+    border: 1px solid rgba(128, 0, 255, 0.3);
+  }
+  .help-text {
+    font-size: 0.9rem;
+    opacity: 0.7;
+    margin-top: 0.3rem;
+  }
+  .tail-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin: 1rem 0 0.5rem 0;
+  }
+  .tail-tab {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    background: rgba(255,255,255,0.1);
+    flex: 1;
+    text-align: center;
+    transition: all 0.2s;
+    color: #fff;
+    font-weight: 500;
+    border: none;
+    outline: none;
+  }
+  .tail-tab.active {
+    background: #000;
+    box-shadow: 0 0 0 2px #e100ff;
+    color: #fff;
+  }
+  .visual-indicator {
+    height: 0.5rem;
+    background: linear-gradient(90deg, rgba(128,0,255,0.3), rgba(224,0,255,0.3));
+    margin: 1rem 0;
+    border-radius: 1rem;
+    position: relative;
+  }
+  .z-marker, .t-marker {
+    position: absolute;
+    width: 2px;
+    height: 12px;
+    background-color: #fff;
+    bottom: 0;
+    transform: translateX(-50%);
+  }
+  .critical-marker {
+    position: absolute;
+    width: 2px;
+    height: 8px;
+    background-color: #e100ff;
+    bottom: 0;
+    transform: translateX(-50%);
+  }
+  .critical-label {
+    position: absolute;
+    font-size: 0.7rem;
+    bottom: -18px;
+    transform: translateX(-50%);
+    color: #e100ff;
+  }
+  .z-label, .t-label {
+    position: absolute;
+    font-size: 0.7rem;
+    bottom: -18px;
+    transform: translateX(-50%);
+    color: #fff;
+  }
+  .form-row {
+    display: flex;
+    gap: 1rem;
+  }
+  .form-group {
+    flex: 1;
+  }
+  @media (max-width: 600px) {
+    .container {
+      padding: 1.2rem 0.7rem;
+      margin: 30px auto;
+    }
+    .form-row {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    nav {
+      padding: 1rem;
+      flex-direction: column;
+      gap: 1rem;
+    }
+  }
+</style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <div style="display:flex; align-items:center; gap:0.5rem;">
+      <svg width="30" height="30" viewBox="0 0 100 100" fill="none" stroke="#e100ff" stroke-width="4" style="flex-shrink:0;">
+        <circle cx="50" cy="50" r="40" fill="none" />
+        <path d="M30,50 L45,65 L70,35" stroke="#8000ff" stroke-width="6" fill="none"/>
+      </svg>
+      <span class="gradient-text" style="font-size:1.25rem;">MathVision Pro</span>
+    </div>
+    <div>
+      <a href="home.html">Home</a>
+      <a href="calculator.html" style="background: linear-gradient(90deg, #8000ff, #e100ff); padding: 0.4rem 0.8rem; border-radius: 0.5rem; font-weight: 700; color: white; margin-left: 1rem;">Launch Calculator</a>
+    </div>
+  </nav>
+
+  <!-- Calculator Header -->
+  <div class="hero-gradient">
+    <div class="max-w-7xl text-center">
+      <h1 class="text-3xl md:text-5xl font-extrabold mb-4 gradient-text">Hypothesis calculator</h1>
+    </div>
+  </div>
+
+  <div class="container">
+    <h2>Statistical Tests</h2>
+
+    <!-- Test Type Selection -->
+    <label>Choose Test Type:</label>
+    <div class="btn-group" id="test-type-group">
+      <div class="btn-option active" data-test="z">Z-Test</div>
+      <div class="btn-option" data-test="t">T-Test</div>
+    </div>
+
+    <!-- Number of Samples Selection -->
+    <label>Number of Samples:</label>
+    <div class="btn-group" id="sample-count-group">
+      <div class="btn-option active" data-count="1">1</div>
+      <div class="btn-option" data-count="2">2</div>
+    </div>
+
+    <!-- Level of Significance -->
+    <label for="alpha-level">Level of Significance (α):</label>
+    <select id="alpha-level" style="margin-bottom:1rem;">
+      <option value="0.01">1% (Critical Value = 2.58)</option>
+      <option value="0.05" selected>5% (Critical Value = 1.96)</option>
+      <option value="0.10">10% (Critical Value = 1.28)</option>
+    </select>
+
+    <form id="test-form">
+      <div id="inputs-1sample">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Sample mean (x̄):</label>
+            <input type="number" id="xbar1" value="5" step="any" />
+          </div>
+          <div class="form-group">
+            <label>Population mean (μ₀):</label>
+            <input type="number" id="mu01" value="4" step="any" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Std dev (σ):</label>
+            <input type="number" id="sigma1" value="2" step="any" min="0.0001" />
+          </div>
+          <div class="form-group">
+            <label>Sample size (n):</label>
+            <input type="number" id="n1" value="30" min="1" step="1" />
+          </div>
+        </div>
+      </div>
+
+      <div id="inputs-2sample" style="display:none;">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Sample mean 1 (x̄₁):</label>
+            <input type="number" id="xbar2_1" value="5" step="any" />
+          </div>
+          <div class="form-group">
+            <label>Sample mean 2 (x̄₂):</label>
+            <input type="number" id="xbar2_2" value="4" step="any" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Std dev 1 (σ₁):</label>
+            <input type="number" id="sigma2_1" value="2" step="any" min="0.0001" />
+          </div>
+          <div class="form-group">
+            <label>Std dev 2 (σ₂):</label>
+            <input type="number" id="sigma2_2" value="2" step="any" min="0.0001" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Sample size 1 (n₁):</label>
+            <input type="number" id="n2_1" value="30" min="1" step="1" />
+          </div>
+          <div class="form-group">
+            <label>Sample size 2 (n₂):</label>
+            <input type="number" id="n2_2" value="30" min="1" step="1" />
+          </div>
+        </div>
+      </div>
+
+      <label>Alternative hypothesis:</label>
+      <div class="tail-tabs">
+        <button type="button" class="tail-tab active" data-value="two-tailed">Two-tailed</button>
+        <button type="button" class="tail-tab" data-value="greater">Right-tailed</button>
+        <button type="button" class="tail-tab" data-value="less">Left-tailed</button>
+      </div>
+      <input type="hidden" id="alt-hypothesis" value="two-tailed">
+      <div class="help-text">Choose the alternative hypothesis based on your research question</div>
+
+      <button type="button" class="btn-primary" id="compute-btn">Compute Test Results</button>
+    </form>
+
+    <div class="output" id="output"></div>
+  </div>
+
+<script>
+  // t-distribution critical values table
+  const tTable = {
+    1: { "0.10": 6.314, "0.05": 12.706, "0.01": 31.821 },
+    2: { "0.10": 2.920, "0.05": 4.303, "0.01": 6.965 },
+    3: { "0.10": 2.353, "0.05": 3.182, "0.01": 4.541 },
+    4: { "0.10": 2.132, "0.05": 2.776, "0.01": 3.747 },
+    5: { "0.10": 2.015, "0.05": 2.571, "0.01": 3.365 },
+    6: { "0.10": 1.943, "0.05": 2.447, "0.01": 3.143 },
+    7: { "0.10": 1.895, "0.05": 2.365, "0.01": 2.998 },
+    8: { "0.10": 1.860, "0.05": 2.306, "0.01": 2.896 },
+    9: { "0.10": 1.833, "0.05": 2.262, "0.01": 2.821 },
+    10: { "0.10": 1.812, "0.05": 2.228, "0.01": 2.764 },
+    11: { "0.10": 1.796, "0.05": 2.201, "0.01": 2.718 },
+    12: { "0.10": 1.782, "0.05": 2.179, "0.01": 2.681 },
+    13: { "0.10": 1.771, "0.05": 2.160, "0.01": 2.650 },
+    14: { "0.10": 1.761, "0.05": 2.145, "0.01": 2.624 },
+    15: { "0.10": 1.753, "0.05": 2.131, "0.01": 2.602 },
+    16: { "0.10": 1.746, "0.05": 2.120, "0.01": 2.583 },
+    17: { "0.10": 1.740, "0.05": 2.110, "0.01": 2.567 },
+    18: { "0.10": 1.734, "0.05": 2.101, "0.01": 2.552 },
+    19: { "0.10": 1.729, "0.05": 2.093, "0.01": 2.539 },
+    20: { "0.10": 1.725, "0.05": 2.086, "0.01": 2.528 },
+    21: { "0.10": 1.721, "0.05": 2.080, "0.01": 2.518 },
+    22: { "0.10": 1.717, "0.05": 2.074, "0.01": 2.508 },
+    23: { "0.10": 1.714, "0.05": 2.069, "0.01": 2.500 },
+    24: { "0.10": 1.711, "0.05": 2.064, "0.01": 2.492 },
+    25: { "0.10": 1.708, "0.05": 2.060, "0.01": 2.485 },
+    26: { "0.10": 1.706, "0.05": 2.056, "0.01": 2.479 },
+    27: { "0.10": 1.703, "0.05": 2.052, "0.01": 2.473 },
+    28: { "0.10": 1.701, "0.05": 2.048, "0.01": 2.467 },
+    29: { "0.10": 1.699, "0.05": 2.045, "0.01": 2.462 },
+    30: { "0.10": 1.697, "0.05": 2.042, "0.01": 2.457 },
+    "∞": { "0.10": 1.645, "0.05": 1.960, "0.01": 2.576 }
+  };
+
+  function getClosestDF(df) {
+    if (df >= 30) return 30;
+    if (df < 1) return 1;
+    return Math.round(df);
+  }
+
+  // Calculate degrees of freedom for two-sample t-test (Welch's approximation)
+  function calculateDF(s1, n1, s2, n2) {
+    const num = Math.pow(s1*s1/n1 + s2*s2/n2, 2);
+    const den = Math.pow(s1*s1/n1, 2)/(n1-1) + Math.pow(s2*s2/n2, 2)/(n2-1);
+    return num / den;
+  }
+
+  const testTypeGroup = document.getElementById('test-type-group');
+  const sampleCountGroup = document.getElementById('sample-count-group');
+  const inputs1Sample = document.getElementById('inputs-1sample');
+  const inputs2Sample = document.getElementById('inputs-2sample');
+  const outputDiv = document.getElementById('output');
+  const computeBtn = document.getElementById('compute-btn');
+  const alphaSelect = document.getElementById('alpha-level');
+  const altHypothesis = document.getElementById('alt-hypothesis');
+  const tailTabs = document.querySelectorAll('.tail-tab');
+
+  let selectedTest = 'z';
+  let sampleCount = 1;
+
+  function updateTestTypeUI() {
+    [...testTypeGroup.children].forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.test === selectedTest);
+    });
+  }
+
+  function updateSampleCountUI() {
+    [...sampleCountGroup.children].forEach(btn => {
+      btn.classList.toggle('active', parseInt(btn.dataset.count) === sampleCount);
+    });
+    inputs1Sample.style.display = sampleCount === 1 ? '' : 'none';
+    inputs2Sample.style.display = sampleCount === 2 ? '' : 'none';
+  }
+
+  function updateTestAvailability() {
+    let n1 = 0, n2 = 0;
+    if (sampleCount === 1) {
+      n1 = parseInt(document.getElementById('n1').value) || 0;
+    } else {
+      n1 = parseInt(document.getElementById('n2_1').value) || 0;
+      n2 = parseInt(document.getElementById('n2_2').value) || 0;
+    }
+    
+    const zBtn = [...testTypeGroup.children].find(btn => btn.dataset.test === 'z');
+    const tBtn = [...testTypeGroup.children].find(btn => btn.dataset.test === 't');
+    
+    if ((sampleCount === 1 && n1 < 30) || (sampleCount === 2 && (n1 < 30 || n2 < 30))) {
+      zBtn.classList.add('disabled');
+      tBtn.classList.remove('disabled');
+      if (selectedTest === 'z') selectedTest = 't';
+    } else {
+      zBtn.classList.remove('disabled');
+      tBtn.classList.remove('disabled');
+    }
+    updateTestTypeUI();
+  }
+
+  function selectTail(tailType) {
+    tailTabs.forEach(tab => {
+      tab.classList.toggle('active', tab.dataset.value === tailType);
+    });
+    altHypothesis.value = tailType;
+  }
+
+  function calculateTestStatistic() {
+    const alpha = parseFloat(alphaSelect.value);
+    const alt = altHypothesis.value;
+
+    if (sampleCount === 1) {
+      const xbar = parseFloat(document.getElementById('xbar1').value);
+      const mu0 = parseFloat(document.getElementById('mu01').value);
+      const sigma = parseFloat(document.getElementById('sigma1').value);
+      const n = parseInt(document.getElementById('n1').value);
+
+      if (isNaN(xbar)) return { error: "Please enter a valid sample mean" };
+      if (isNaN(mu0)) return { error: "Please enter a valid population mean" };
+      if (isNaN(sigma) || sigma <= 0) return { error: "Please enter a valid standard deviation (> 0)" };
+      if (isNaN(n) || n < 1) return { error: "Please enter a valid sample size (≥ 1)" };
+
+      if (selectedTest === 'z') {
+        if (n < 30) return { error: "Sample size too small for Z-test. Use T-test instead." };
+        const z = (xbar - mu0) / (sigma / Math.sqrt(n));
+        return { type: 'z', value: z, alpha, alt };
+      } else {
+        const t = (xbar - mu0) / (sigma / Math.sqrt(n));
+        const df = n - 1;
+        return { type: 't', value: t, alpha, alt, df };
+      }
+    } else {
+      const xbar1 = parseFloat(document.getElementById('xbar2_1').value);
+      const xbar2 = parseFloat(document.getElementById('xbar2_2').value);
+      const sigma1 = parseFloat(document.getElementById('sigma2_1').value);
+      const sigma2 = parseFloat(document.getElementById('sigma2_2').value);
+      const n1 = parseInt(document.getElementById('n2_1').value);
+      const n2 = parseInt(document.getElementById('n2_2').value);
+
+      if (isNaN(xbar1)) return { error: "Please enter a valid sample mean 1" };
+      if (isNaN(xbar2)) return { error: "Please enter a valid sample mean 2" };
+      if (isNaN(sigma1) || sigma1 <= 0) return { error: "Please enter a valid standard deviation 1 (> 0)" };
+      if (isNaN(sigma2) || sigma2 <= 0) return { error: "Please enter a valid standard deviation 2 (> 0)" };
+      if (isNaN(n1) || n1 < 1) return { error: "Please enter a valid sample size 1 (≥ 1)" };
+      if (isNaN(n2) || n2 < 1) return { error: "Please enter a valid sample size 2 (≥ 1)" };
+
+      if (selectedTest === 'z') {
+        if (n1 < 30 || n2 < 30) return { error: "Sample sizes too small for Z-test. Use T-test instead." };
+        const se = Math.sqrt(sigma1*sigma1/n1 + sigma2*sigma2/n2);
+        const z = (xbar1 - xbar2) / se;
+        return { type: 'z', value: z, alpha, alt };
+      } else {
+        const se = Math.sqrt(sigma1*sigma1/n1 + sigma2*sigma2/n2);
+        const t = (xbar1 - xbar2) / se;
+        const df = calculateDF(sigma1, n1, sigma2, n2);
+        return { type: 't', value: t, alpha, alt, df };
+      }
+    }
+  }
+
+  function showTestResult(result) {
+    if (result.error) {
+      outputDiv.innerHTML = `<div class="result-summary reject">${result.error}</div>`;
+      return;
+    }
+
+    const { type, value, alpha, alt, df } = result;
+    const minVal = -4, maxVal = 4;
+    
+    // Scale the test statistic to fit within our visual range
+    const scaledValue = Math.max(minVal, Math.min(maxVal, value));
+    const valuePercent = ((scaledValue - minVal) / (maxVal - minVal)) * 100;
+
+    let critVal, critLeft = null, critRight = null;
+    let comparisonText = '';
+    let reject = false;
+
+    if (type === 'z') {
+      critVal = { "0.01": 2.58, "0.05": 1.96, "0.10": 1.28 }[alpha.toString()];
+      
+      if (alt === 'two-tailed') {
+        reject = Math.abs(value) > critVal;
+        comparisonText = `|Z| = ${Math.abs(value).toFixed(4)} ${reject ? '>' : '≤'} ${critVal}`;
+        critLeft = -critVal;
+        critRight = critVal;
+      } else if (alt === 'greater') {
+        reject = value > critVal;
+        comparisonText = `Z = ${value.toFixed(4)} ${reject ? '>' : '≤'} ${critVal}`;
+        critRight = critVal;
+      } else {
+        reject = value < -critVal;
+        comparisonText = `Z = ${value.toFixed(4)} ${reject ? '<' : '≥'} ${-critVal}`;
+        critLeft = -critVal;
+      }
+    } else { // t-test
+      const dfRounded = getClosestDF(df);
+      critVal = tTable[dfRounded] ? tTable[dfRounded][alpha.toString()] : tTable["∞"][alpha.toString()];
+      
+      if (alt === 'two-tailed') {
+        reject = Math.abs(value) > critVal;
+        comparisonText = `|t| = ${Math.abs(value).toFixed(4)} ${reject ? '>' : '≤'} ${critVal.toFixed(4)}`;
+        critLeft = -critVal;
+        critRight = critVal;
+      } else if (alt === 'greater') {
+        reject = value > critVal;
+        comparisonText = `t = ${value.toFixed(4)} ${reject ? '>' : '≤'} ${critVal.toFixed(4)}`;
+        critRight = critVal;
+      } else {
+        reject = value < -critVal;
+        comparisonText = `t = ${value.toFixed(4)} ${reject ? '<' : '≥'} ${-critVal.toFixed(4)}`;
+        critLeft = -critVal;
+      }
+    }
+
+    // Create visual indicator
+    let visual = `<div class="visual-indicator">`;
+    
+    // Add critical markers
+    if (critLeft !== null) {
+      const leftPercent = ((critLeft - minVal) / (maxVal - minVal)) * 100;
+      visual += `<div class="critical-marker" style="left: ${leftPercent}%"></div>
+                 <div class="critical-label" style="left: ${leftPercent}%">${critLeft.toFixed(type === 'z' ? 2 : 3)}</div>`;
+    }
+    if (critRight !== null) {
+      const rightPercent = ((critRight - minVal) / (maxVal - minVal)) * 100;
+      visual += `<div class="critical-marker" style="left: ${rightPercent}%"></div>
+                 <div class="critical-label" style="left: ${rightPercent}%">${critRight.toFixed(type === 'z' ? 2 : 3)}</div>`;
+    }
+    
+    // Add test statistic marker
+    const markerClass = type === 'z' ? 'z-marker' : 't-marker';
+    const markerLabel = type === 'z' ? 'Z' : 't';
+    visual += `<div class="${markerClass}" style="left: ${valuePercent}%"></div>
+               <div class="${markerLabel}-label" style="left: ${valuePercent}%">${markerLabel}=${value.toFixed(4)}</div></div>`;
+
+    // Create result output
+    outputDiv.innerHTML = `
+      ${visual}
+      <div><b>Test type:</b> ${type.toUpperCase()}-test${type === 't' ? ` (df = ${df.toFixed(2)})` : ''}</div>
+      <div class="result-summary ${reject ? 'reject' : 'accept'}">
+        ${comparisonText}<br>
+        <strong>Since the calculated value is ${reject ? 'greater' : 'smaller or equal'} than the ${type === 'z' ? 'level of significance value' : 'table critical value'}, the null hypothesis is <u>${reject ? 'rejected' : 'accepted'}</u>.</strong>
+      </div>
+      <div style="margin-top: 1rem;">
+        <b>Interpretation:</b> ${reject 
+          ? 'There is sufficient evidence to reject the null hypothesis at the ' + (alpha*100) + '% significance level.'
+          : 'There is not sufficient evidence to reject the null hypothesis at the ' + (alpha*100) + '% significance level.'}
+      </div>
+    `;
+  }
+
+  // Event listeners
+  testTypeGroup.addEventListener('click', e => {
+    if (!e.target.classList.contains('btn-option') || e.target.classList.contains('disabled')) return;
+    selectedTest = e.target.dataset.test;
+    updateTestTypeUI();
+  });
+
+  sampleCountGroup.addEventListener('click', e => {
+    if (!e.target.classList.contains('btn-option')) return;
+    sampleCount = parseInt(e.target.dataset.count);
+    updateSampleCountUI();
+    updateTestAvailability();
+  });
+
+  tailTabs.forEach(tab => {
+    tab.addEventListener('click', () => selectTail(tab.dataset.value));
+  });
+
+  ['n1', 'n2_1', 'n2_2'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', updateTestAvailability);
+  });
+
+  computeBtn.addEventListener('click', () => {
+    const result = calculateTestStatistic();
+    showTestResult(result);
+  });
+
+  // Initialize UI
+  updateTestTypeUI();
+  updateSampleCountUI();
+  updateTestAvailability();
+  selectTail('two-tailed');
+</script>
+</body>
+</html>
