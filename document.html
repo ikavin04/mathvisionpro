@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MathVision Pro | Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: #0c0a19;
+            color: #fff;
+            overflow-x: hidden;
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #2c0735 0%, #1c0631 50%, #16052b 100%);
+        }
+        .doc-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .doc-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(143, 0, 255, 0.3);
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #8000ff, #e100ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .sidebar-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .sidebar-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #8000ff, #e100ff);
+            transition: width 0.3s ease;
+        }
+        .sidebar-link:hover::after {
+            width: 100%;
+        }
+        .active-doc::after {
+            width: 100%;
+        }
+        pre {
+            background: rgba(0, 0, 0, 0.3) !important;
+            border-radius: 8px;
+            border-left: 3px solid #8000ff;
+        }
+        code {
+            color: #e100ff !important;
+        }
+        .method-tag {
+            background: rgba(128, 0, 255, 0.2);
+            color: #e100ff;
+            border: 1px solid rgba(225, 0, 255, 0.3);
+        }
+    </style>
+</head>
+<body class="font-sans">
+    <!-- Navigation -->
+    <nav class="bg-black/30 backdrop-blur-md shadow-lg sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <svg width="30" height="30" viewBox="0 0 100 100" class="mr-2">
+                            <circle cx="50" cy="50" r="40" fill="none" stroke="#e100ff" stroke-width="4"/>
+                            <path d="M30,50 L45,65 L70,35" stroke="#8000ff" stroke-width="6" fill="none"/>
+                        </svg>
+                        <span class="text-xl font-bold">Math<span class="gradient-text">Vision</span> Pro</span>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="home.html" class="text-gray-300 hover:text-purple-400 px-3 py-2 text-sm font-medium">Home</a>
+                    <a href="#" class="text-purple-400 px-3 py-2 text-sm font-medium border-b-2 border-purple-400">Documentation</a>
+                    <a href="calculator.html" class="bg-gradient-to-r from-purple-800 to-pink-600 px-4 py-2 rounded-lg font-bold text-white text-sm uppercase tracking-wider shadow-lg">
+                        <i class="fas fa-calculator mr-2"></i>Launch Calculator
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Documentation Hero -->
+    <section class="hero-gradient py-16 px-4 text-center">
+        <h1 class="text-4xl md:text-6xl font-extrabold mb-6 gradient-text animate__animated animate__fadeInDown">Developer Documentation</h1>
+        <p class="max-w-3xl mx-auto text-xl text-purple-200 mb-8 animate__animated animate__fadeInUp">
+            Everything you need to integrate and extend MathVision Pro's statistical capabilities
+        </p>
+        <div class="max-w-2xl mx-auto relative">
+            <input type="text" placeholder="Search documentation..." class="w-full bg-black/30 backdrop-blur-md border border-purple-500/30 rounded-full py-3 px-6 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+            <button class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-purple-800 to-pink-600 text-white p-2 rounded-full">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </section>
+
+    <!-- Documentation Layout -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col md:flex-row">
+        <!-- Sidebar -->
+        <div class="w-full md:w-64 flex-shrink-0 mb-8 md:mb-0 md:mr-8">
+            <div class="sticky top-24">
+                <div class="bg-black/30 backdrop-blur-md rounded-xl p-4 border border-purple-500/20">
+                    <h3 class="text-lg font-bold mb-4 gradient-text">Getting Started</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#introduction" class="sidebar-link active-doc text-purple-400 block py-1">Introduction</a></li>
+                        <li><a href="#installation" class="sidebar-link text-gray-300 hover:text-purple-400 block py-1">Installation</a></li>
+                        <li><a href="#quickstart" class="sidebar-link text-gray-300 hover:text-purple-400 block py-1">Quick Start</a></li>
+                    </ul>
+                    
+                    <h3 class="text-lg font-bold mt-8 mb-4 gradient-text">API Reference</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#descriptive-stats" class="sidebar-link text-gray-300 hover:text-purple-400 block py-1">Descriptive Stats</a></li>
+                        <li><a href="#probability" class="sidebar-link text-gray-300 hover:text-purple-400 block py-1">Probability</a></li>
+                        <li><a href="#distributions" class="sidebar-link text-gray-300 hover:text-purple-400 block py-1">Distributions</a></li>
+                        <li><a href="#hypothesis-testing" class="sidebar-link text-gray-300 hover:text-purple-400 block py-1">Hypothesis Testing</a></li>
+                        <li><a href="#anova" class="sidebar-link text-gray-300 hover:text-purple-400 block py-1">ANOVA</a></li>
+                    </ul>
+                    
+                    <h3 class="text-lg font-bold mt-8 mb-4 gradient-text">Advanced</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#custom-functions" class="sidebar-link text-gray-300 hover:text-purple-400 block py-1">Custom Functions</a></li>
+                        <li><a href="#extending" class="sidebar-link text-gray-300 hover:text-purple-400 block py-1">Extending</a></li>
+                        <li><a href="#troubleshooting" class="sidebar-link text-gray-300 hover:text-purple-400 block py-1">Troubleshooting</a></li>
+                    </ul>
+                </div>
+                
+                <div class="mt-6 bg-black/30 backdrop-blur-md rounded-xl p-4 border border-purple-500/20">
+                    <h3 class="text-lg font-bold mb-3 gradient-text">Resources</h3>
+                    <a href="https://github.com/ikavin04/mathvisionpro" class="flex items-center text-gray-300 hover:text-purple-400 mb-2">
+                        <i class="fab fa-github mr-2"></i> GitHub Repo
+                    </a>
+                    <a href="#" class="flex items-center text-gray-300 hover:text-purple-400 mb-2">
+                        <i class="fas fa-book mr-2"></i> Examples
+                    </a>
+                    <a href="#" class="flex items-center text-gray-300 hover:text-purple-400">
+                        <i class="fas fa-question-circle mr-2"></i> Support
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="flex-1">
+            <!-- Introduction -->
+            <section id="introduction" class="doc-card rounded-xl p-8 mb-8">
+                <h2 class="text-3xl font-bold mb-6 gradient-text">Introduction</h2>
+                <p class="text-purple-200 mb-4">
+                    MathVision Pro is an advanced statistics calculator suite designed for students, educators, and professionals. 
+                    It provides a comprehensive set of tools for statistical analysis, probability calculations, and data visualization.
+                </p>
+                <p class="text-purple-200 mb-6">
+                    This documentation covers the API reference, usage examples, and advanced customization options for developers 
+                    looking to integrate MathVision Pro into their applications or extend its functionality.
+                </p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                    <div class="bg-black/20 p-6 rounded-lg border border-purple-500/20">
+                        <div class="flex items-center mb-3">
+                            <div class="bg-purple-900/30 p-2 rounded-full mr-3">
+                                <i class="fas fa-bolt text-purple-400"></i>
+                            </div>
+                            <h3 class="text-xl font-bold">Key Features</h3>
+                        </div>
+                        <ul class="space-y-2 text-purple-200 pl-2">
+                            <li class="flex items-start">
+                                <i class="fas fa-check text-purple-400 mt-1 mr-2 text-xs"></i>
+                                <span>Comprehensive statistical functions</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check text-purple-400 mt-1 mr-2 text-xs"></i>
+                                <span>Interactive visualizations</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check text-purple-400 mt-1 mr-2 text-xs"></i>
+                                <span>Modular architecture</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check text-purple-400 mt-1 mr-2 text-xs"></i>
+                                <span>Extensible API</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-black/20 p-6 rounded-lg border border-purple-500/20">
+                        <div class="flex items-center mb-3">
+                            <div class="bg-purple-900/30 p-2 rounded-full mr-3">
+                                <i class="fas fa-cubes text-purple-400"></i>
+                            </div>
+                            <h3 class="text-xl font-bold">Components</h3>
+                        </div>
+                        <ul class="space-y-2 text-purple-200 pl-2">
+                            <li class="flex items-start">
+                                <i class="fas fa-cube text-purple-400 mt-1 mr-2 text-xs"></i>
+                                <span>Core calculation engine</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-cube text-purple-400 mt-1 mr-2 text-xs"></i>
+                                <span>UI components library</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-cube text-purple-400 mt-1 mr-2 text-xs"></i>
+                                <span>Data visualization module</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-cube text-purple-400 mt-1 mr-2 text-xs"></i>
+                                <span>API interface layer</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Installation -->
+            <section id="installation" class="doc-card rounded-xl p-8 mb-8">
+                <h2 class="text-3xl font-bold mb-6 gradient-text">Installation</h2>
+                <p class="text-purple-200 mb-6">
+                    MathVision Pro can be installed via npm for integration into your JavaScript projects, 
+                    or included directly via CDN for quick prototyping.
+                </p>
+                
+                <h3 class="text-2xl font-bold mb-4 text-purple-300 mt-8">npm Installation</h3>
+                <pre class="p-4 mb-6 overflow-x-auto"><code>npm install mathvision-pro</code></pre>
+                
+                <h3 class="text-2xl font-bold mb-4 text-purple-300">CDN Usage</h3>
+                <pre class="p-4 mb-6 overflow-x-auto"><code>&lt;script src="https://cdn.jsdelivr.net/npm/mathvision-pro@latest/dist/mathvision.min.js"&gt;&lt;/script&gt;</code></pre>
+                
+                <h3 class="text-2xl font-bold mb-4 text-purple-300">Dependencies</h3>
+                <p class="text-purple-200 mb-4">
+                    MathVision Pro has the following peer dependencies:
+                </p>
+                <ul class="list-disc list-inside text-purple-200 mb-6 pl-4">
+                    <li class="mb-1">chart.js (^3.7.0) - for visualizations</li>
+                    <li class="mb-1">math.js (^10.0.0) - for advanced calculations</li>
+                </ul>
+                
+                <div class="bg-purple-900/20 border border-purple-500/30 rounded-lg p-4">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 mt-1">
+                            <i class="fas fa-info-circle text-purple-400"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h4 class="text-sm font-bold text-purple-300 mb-1">Note</h4>
+                            <p class="text-sm text-purple-200">
+                                For Node.js usage, you'll need to import the ES module version: 
+                                <code class="text-sm">import { Stats } from 'mathvision-pro';</code>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Quick Start -->
+            <section id="quickstart" class="doc-card rounded-xl p-8 mb-8">
+                <h2 class="text-3xl font-bold mb-6 gradient-text">Quick Start</h2>
+                <p class="text-purple-200 mb-6">
+                    Get started with MathVision Pro in just a few lines of code. This example shows how to calculate 
+                    basic descriptive statistics for a dataset.
+                </p>
+                
+                <h3 class="text-2xl font-bold mb-4 text-purple-300">Basic Usage</h3>
+                <pre class="p-4 mb-6 overflow-x-auto"><code>// Initialize the Stats module
+const stats = new MathVision.Stats();
+
+// Sample dataset
+const data = [12, 15, 18, 22, 17, 14, 19, 21, 16, 20];
+
+// Calculate descriptive statistics
+const results = stats.descriptive(data);
+
+// Output the results
+console.log(results);
+/* Output:
+{
+  mean: 17.4,
+  median: 17.5,
+  mode: [],
+  range: 10,
+  variance: 9.44,
+  stdDev: 3.07,
+  quartiles: { q1: 15, q2: 17.5, q3: 20 }
+}
+*/</code></pre>
+                
+                <h3 class="text-2xl font-bold mb-4 text-purple-300">Visualization Example</h3>
+                <pre class="p-4 mb-6 overflow-x-auto"><code>// Create a histogram visualization
+const viz = new MathVision.Visualization();
+
+viz.createHistogram({
+  element: '#chart-container',
+  data: data,
+  bins: 5,
+  colors: {
+    bar: 'rgba(143, 0, 255, 0.7)',
+    border: 'rgba(225, 0, 255, 1)'
+  },
+  title: 'Data Distribution'
+});</code></pre>
+                
+                <div class="bg-purple-900/20 border border-purple-500/30 rounded-lg p-4 mt-6">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 mt-1">
+                            <i class="fas fa-lightbulb text-purple-400"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h4 class="text-sm font-bold text-purple-300 mb-1">Tip</h4>
+                            <p class="text-sm text-purple-200">
+                                Check the browser's console for detailed output when debugging calculations. 
+                                All methods provide verbose logging in development mode.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- API Reference: Descriptive Stats -->
+            <section id="descriptive-stats" class="doc-card rounded-xl p-8 mb-8">
+                <h2 class="text-3xl font-bold mb-6 gradient-text">Descriptive Statistics API</h2>
+                <p class="text-purple-200 mb-6">
+                    The Descriptive Statistics module provides methods for analyzing and summarizing datasets.
+                </p>
+                
+                <div class="space-y-8">
+                    <!-- Method 1 -->
+                    <div class="border-b border-purple-500/20 pb-6">
+                        <div class="flex items-center mb-2">
+                            <span class="method-tag text-xs font-mono px-2 py-1 rounded mr-3">method</span>
+                            <h3 class="text-xl font-bold text-purple-100">descriptive(data, options)</h3>
+                        </div>
+                        <p class="text-purple-300 mb-3">Calculates all descriptive statistics for a dataset.</p>
+                        
+                        <h4 class="text-sm font-bold text-purple-300 mb-2">Parameters</h4>
+                        <ul class="text-sm text-purple-200 mb-4 space-y-1">
+                            <li><span class="font-mono">data</span> (Array) - The dataset to analyze</li>
+                            <li><span class="font-mono">options</span> (Object) - Optional settings:
+                                <ul class="list-disc list-inside ml-4 mt-1">
+                                    <li><span class="font-mono">precision</span>: Number of decimal places (default: 2)</li>
+                                    <li><span class="font-mono">include</span>: Array of stats to include (default: all)</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        
+                        <h4 class="text-sm font-bold text-purple-300 mb-2">Returns</h4>
+                        <p class="text-sm text-purple-200 mb-4">Object containing all descriptive statistics.</p>
+                        
+                        <h4 class="text-sm font-bold text-purple-300 mb-2">Example</h4>
+                        <pre class="p-4 text-sm overflow-x-auto"><code>const results = stats.descriptive([10, 20, 30, 40], {
+  precision: 3,
+  include: ['mean', 'stdDev']
+});
+
+// Output: { mean: 25.000, stdDev: 12.909 }</code></pre>
+                    </div>
+                    
+                    <!-- Method 2 -->
+                    <div class="border-b border-purple-500/20 pb-6">
+                        <div class="flex items-center mb-2">
+                            <span class="method-tag text-xs font-mono px-2 py-1 rounded mr-3">method</span>
+                            <h3 class="text-xl font-bold text-purple-100">calculateMean(data)</h3>
+                        </div>
+                        <p class="text-purple-300 mb-3">Calculates the arithmetic mean of a dataset.</p>
+                        
+                        <h4 class="text-sm font-bold text-purple-300 mb-2">Parameters</h4>
+                        <ul class="text-sm text-purple-200 mb-4 space-y-1">
+                            <li><span class="font-mono">data</span> (Array) - The dataset to analyze</li>
+                        </ul>
+                        
+                        <h4 class="text-sm font-bold text-purple-300 mb-2">Returns</h4>
+                        <p class="text-sm text-purple-200 mb-4">Number representing the mean.</p>
+                        
+                        <h4 class="text-sm font-bold text-purple-300 mb-2">Example</h4>
+                        <pre class="p-4 text-sm overflow-x-auto"><code>const avg = stats.calculateMean([5, 10, 15]);
+// Output: 10</code></pre>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- More sections would follow the same pattern -->
+            
+            <div class="mt-12 pt-8 border-t border-purple-500/20 text-center">
+                <p class="text-purple-300 mb-4">Need more help?</p>
+                <a href="#" class="inline-block bg-gradient-to-r from-purple-800 to-pink-600 px-6 py-3 rounded-lg font-bold text-white uppercase tracking-wider text-sm shadow-lg">
+                    Contact Support <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center py-8 text-purple-300 bg-black/30 mt-8">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <div class="flex items-center justify-center md:justify-start">
+                        <svg width="24" height="24" viewBox="0 0 100 100" class="mr-2">
+                            <circle cx="50" cy="50" r="40" fill="none" stroke="#e100ff" stroke-width="4"/>
+                            <path d="M30,50 L45,65 L70,35" stroke="#8000ff" stroke-width="6" fill="none"/>
+                        </svg>
+                        <span class="text-lg font-bold">Math<span class="gradient-text">Vision</span> Pro</span>
+                    </div>
+                </div>
+                <div class="flex space-x-6 mb-4 md:mb-0">
+                    <a href="#" class="text-purple-300 hover:text-white">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
+                    <a href="#" class="text-purple-300 hover:text-white">
+                        <i class="fab fa-twitter text-xl"></i>
+                    </a>
+                    <a href="#" class="text-purple-300 hover:text-white">
+                        <i class="fab fa-discord text-xl"></i>
+                    </a>
+                </div>
+                <div class="text-sm">
+                    <p>&copy; 2025 MathVision Pro. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+                
+                // Update active state in sidebar
+                document.querySelectorAll('.sidebar-link').forEach(link => {
+                    link.classList.remove('active-doc', 'text-purple-400');
+                    link.classList.add('text-gray-300');
+                });
+                this.classList.add('active-doc', 'text-purple-400');
+                this.classList.remove('text-gray-300');
+            });
+        });
+        
+        // Highlight current section in view
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    const link = document.querySelector(`.sidebar-link[href="#${id}"]`);
+                    
+                    if (link) {
+                        document.querySelectorAll('.sidebar-link').forEach(l => {
+                            l.classList.remove('active-doc', 'text-purple-400');
+                            l.classList.add('text-gray-300');
+                        });
+                        
+                        link.classList.add('active-doc', 'text-purple-400');
+                        link.classList.remove('text-gray-300');
+                    }
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        document.querySelectorAll('section[id]').forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
