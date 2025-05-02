@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MathVision Pro | Launch Calculator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+    
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background-color: #0c0a19;
+      color: #fff;
+      min-height: 100vh;
+    }
+    
+    .calculator {
+      box-shadow: 0 8px 32px 0 #8000ff33;
+      background: linear-gradient(135deg, #2c0735 0%, #1c0631 50%, #16052b 100%);
+      border-radius: 1.5rem;
+      border: 1px solid rgba(128, 0, 255, 0.2);
+    }
+    
+    .calc-display {
+      font-family: 'Share Tech Mono', monospace, 'Menlo', 'Consolas', monospace;
+      background: #181c2f;
+      color: #a5b4fc;
+      font-size: 1.6rem;
+      border-radius: 0.75rem;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 20px;
+      box-shadow: 0 2px 12px -3px #6366f1;
+      margin: 22px 22px 0 22px;
+      letter-spacing: 2px;
+      background: rgba(12, 10, 25, 0.5);
+      border: 1px solid rgba(128, 0, 255, 0.3);
+      color: #e100ff;
+    }
+    
+    .fake-keys {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.6rem;
+      padding: 26px 22px 22px 22px;
+    }
+    
+    .fake-key {
+      padding: 0.8rem 0;
+      background: rgba(128, 0, 255, 0.1);
+      border-radius: 0.5rem;
+      text-align: center;
+      color: #e100ff;
+      letter-spacing: 1px;
+      user-select: none;
+      font-family: inherit;
+      font-size: 1.06rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid rgba(128, 0, 255, 0.2);
+      transition: all 0.2s;
+    }
+    
+    .fake-key:hover {
+      background: rgba(128, 0, 255, 0.3);
+      transform: translateY(-2px);
+    }
+    
+    .fake-key:nth-child(1),
+    .fake-key:nth-child(2),
+    .fake-key:nth-child(3),
+    .fake-key:nth-child(4) {
+      background: linear-gradient(90deg, #8000ff, #e100ff);
+      color: #fff;
+      border: none;
+    }
+    
+    .calc-list-item {
+      transition: all 0.2s;
+      cursor: pointer;
+      border-radius: 0.5rem;
+      position: relative;
+      z-index: 1;
+      border: 1px solid rgba(128, 0, 255, 0.1);
+      background: rgba(128, 0, 255, 0.05);
+      margin-bottom: 0.5rem;
+    }
+    
+    .calc-list-item.active,
+    .calc-list-item:focus,
+    .calc-list-item:hover {
+      background: rgba(128, 0, 255, 0.2);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(128, 0, 255, 0.2);
+      font-weight: 600;
+      border-color: rgba(128, 0, 255, 0.3);
+      transform: translateY(-2px);
+    }
+    
+    .calc-list-icon {
+      width: 2.2rem;
+      height: 2.2rem;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(128, 0, 255, 0.2);
+      margin-right: 1rem;
+      font-size: 1.15rem;
+      color: #e100ff;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+    
+    .calc-list-item.active .calc-list-icon,
+    .calc-list-item:focus .calc-list-icon,
+    .calc-list-item:hover .calc-list-icon {
+      background: linear-gradient(90deg, #8000ff, #e100ff);
+      color: #fff;
+    }
+    
+    .gradient-text {
+      background: linear-gradient(90deg, #8000ff, #e100ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-weight: bold;
+    }
+    
+    /* Floating particles animation */
+    .particles-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: -1;
+    }
+    
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.3;
+      pointer-events: none;
+    }
+    
+    /* Glow effect */
+    .glow-effect {
+      position: relative;
+    }
+    
+    .glow-effect::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 1.5rem;
+      padding: 2px;
+      background: linear-gradient(45deg, #8000ff33, #e100ff33, #8000ff33);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    
+    .glow-effect:hover::after {
+      opacity: 1;
+    }
+  </style>
+  <!-- Google Fonts for display -->
+  <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono:400" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="flex justify-between items-center px-8 py-4 bg-[#16052b] shadow-[0_2px_16px_0_rgba(128,0,255,0.13)]">
+    <div class="flex items-center gap-2">
+      <svg width="30" height="30" viewBox="0 0 100 100" fill="none" stroke="#e100ff" stroke-width="4" class="flex-shrink-0">
+        <circle cx="50" cy="50" r="40" fill="none" />
+        <path d="M30,50 L45,65 L70,35" stroke="#8000ff" stroke-width="6" fill="none"/>
+      </svg>
+      <span class="gradient-text text-xl">MathVision Pro</span>
+    </div>
+    <div>
+      <a href="home.html" class="text-white hover:text-[#e100ff] transition-colors mr-4">Home</a>
+      <a href="calculator.html" class="bg-gradient-to-r from-[#8000ff] to-[#e100ff] px-4 py-2 rounded-lg font-bold text-white hover:shadow-[0_4px_16px_rgba(225,0,255,0.33)] transition-shadow">Launch Calculator</a>
+    </div>
+  </nav>
+
+  <!-- Particles Background -->
+  <div class="particles-container" id="particles-container"></div>
+
+  <div class="max-w-5xl mx-auto py-16 px-4">
+    <div class="flex flex-col md:flex-row gap-10 justify-between items-center md:items-stretch">
+
+      <!-- Calculator Visual -->
+      <section class="calculator md:w-[350px] w-full flex flex-col justify-between relative overflow-hidden mb-8 md:mb-0 glow-effect">
+        <div class="flex flex-col">
+          <div class="flex items-center justify-between px-6 pt-6">
+            <span class="text-[#e100ff] text-xl font-bold tracking-wide">
+              <i class="fas fa-calculator mr-2"></i>
+              MathVision Pro
+            </span>
+            <span class="px-3 py-1 rounded text-xs font-bold bg-[#8000ff33] text-[#e100ff]">v2.0</span>
+          </div>
+          <div class="calc-display" id="calcDisplay">Select a Module</div>
+        </div>
+        <div class="fake-keys mt-2">
+          <div class="fake-key">7</div>
+          <div class="fake-key">8</div>
+          <div class="fake-key">9</div>
+          <div class="fake-key">÷</div>
+          <div class="fake-key">4</div>
+          <div class="fake-key">5</div>
+          <div class="fake-key">6</div>
+          <div class="fake-key">×</div>
+          <div class="fake-key">1</div>
+          <div class="fake-key">2</div>
+          <div class="fake-key">3</div>
+          <div class="fake-key">−</div>
+          <div class="fake-key">0</div>
+          <div class="fake-key">.</div>
+          <div class="fake-key">=</div>
+          <div class="fake-key">+</div>
+        </div>
+        <div class="flex items-center justify-center py-3 text-[#a855f7] text-xs border-t border-[#8000ff33]">
+          <i class="fas fa-lock mr-1"></i> Secure &amp; Private
+        </div>
+      </section>
+
+      <!-- Creative List of Calculations -->
+      <section class="flex-1 max-w-xl w-full">
+        <h2 class="text-2xl font-bold text-white mb-6 text-center md:text-left">Choose a Calculation Module</h2>
+        <div id="calcList" class="space-y-2">
+          <button class="calc-list-item w-full flex items-center px-5 py-4 text-left outline-none" 
+            data-module="Descriptive Statistics" 
+            data-link="descriptivestats.html">
+            <span class="calc-list-icon"><i class="fas fa-chart-bar"></i></span>
+            <div>
+              <div class="text-base font-semibold">Descriptive Statistics</div>
+              <div class="text-xs text-[#a855f7] mt-1">Mean, median, mode, variance, histograms, and more</div>
+            </div>
+          </button>
+          <button class="calc-list-item w-full flex items-center px-5 py-4 text-left outline-none"
+            data-module="Probability Calculator"
+            data-link="probability.html">
+            <span class="calc-list-icon"><i class="fas fa-project-diagram"></i></span>
+            <div>
+              <div class="text-base font-semibold">Probability Calculator</div>
+              <div class="text-xs text-[#a855f7] mt-1">Union, intersection, conditional probability with auto-checks</div>
+            </div>
+          </button>
+          <button class="calc-list-item w-full flex items-center px-5 py-4 text-left outline-none"
+            data-module="Random Generator"
+            data-link="randomgenerator.html">
+            <span class="calc-list-icon"><i class="fas fa-random"></i></span>
+            <div>
+              <div class="text-base font-semibold">Random Number Generator</div>
+              <div class="text-xs text-[#a855f7] mt-1">Generate numbers &amp; see instant histogram &amp; stats</div>
+            </div>
+          </button>
+          <button class="calc-list-item w-full flex items-center px-5 py-4 text-left outline-none"
+            data-module="Probability Distributions"
+            data-link="distribution.html">
+            <span class="calc-list-icon"><i class="fas fa-bell"></i></span>
+            <div>
+              <div class="text-base font-semibold">Probability Distributions</div>
+              <div class="text-xs text-[#a855f7] mt-1">Binomial/Normal stats, CDFs, z-scores, interactive charts</div>
+            </div>
+          </button>
+          <button class="calc-list-item w-full flex items-center px-5 py-4 text-left outline-none"
+            data-module="Hypothesis Testing"
+            data-link="hypothesis.html">
+            <span class="calc-list-icon"><i class="fas fa-flask"></i></span>
+            <div>
+              <div class="text-base font-semibold">Hypothesis Testing</div>
+              <div class="text-xs text-[#a855f7] mt-1">Z, T, Chi-square: statistics, p-values, decisions</div>
+            </div>
+          
+          <button class="calc-list-item w-full flex items-center px-5 py-4 text-left outline-none"
+            data-module="ANOVA"
+            data-link="anova.html">
+            <span class="calc-list-icon"><i class="fas fa-chart-line"></i></span>
+            <div>
+              <div class="text-base font-semibold">ANOVA</div>
+              <div class="text-xs text-[#a855f7] mt-1">One way Classification,Two-Way Classification,Latin Square design,2 square Factorial Design</div>
+            </div>
+          </button>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-[#16052b] py-8 px-4 text-center text-[rgba(255,255,255,0.7)]">
+    <div class="flex items-center justify-center gap-2 mb-4">
+      <svg width="20" height="20" viewBox="0 0 100 100" fill="none" stroke="#e100ff" stroke-width="4">
+        <circle cx="50" cy="50" r="40" fill="none" />
+        <path d="M30,50 L45,65 L70,35" stroke="#8000ff" stroke-width="6" fill="none"/>
+      </svg>
+      <span class="gradient-text font-bold">MathVision Pro</span>
+    </div>
+    <p class="text-sm">Advanced statistical analysis tools for researchers and students</p>
+    <p class="text-xs mt-4">© 2025 MathVision Pro. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Dynamic display update & item highlighting
+    const display = document.getElementById('calcDisplay');
+    const calcList = document.getElementById('calcList');
+    let activeIdx = -1;
+    const defaultText = "Select a Module";
+
+    function setActive(index) {
+      const items = Array.from(calcList.querySelectorAll('.calc-list-item'));
+      items.forEach((item, i) => {
+        if (i === index) {
+          item.classList.add('active');
+          display.textContent = item.getAttribute('data-module');
+        } else {
+          item.classList.remove('active');
+        }
+      });
+      if (index < 0 || index >= items.length) {
+        display.textContent = defaultText;
+      }
+      activeIdx = index;
+    }
+
+    // Mouse/keyboard interaction
+    const items = Array.from(calcList.querySelectorAll('.calc-list-item'));
+    items.forEach((item, i) => {
+      item.addEventListener('mouseover', () => setActive(i));
+      item.addEventListener('focus', () => setActive(i));
+      item.addEventListener('mouseleave', () => setActive(-1));
+      item.addEventListener('blur', () => setActive(-1));
+      item.addEventListener('click', () => {
+        window.location.href = item.getAttribute('data-link');
+      });
+      // Keyboard navigation
+      item.addEventListener('keydown', e => {
+        if (e.key === "ArrowDown" && i < items.length - 1) {
+          items[i + 1].focus();
+        } else if (e.key === "ArrowUp" && i > 0) {
+          items[i - 1].focus();
+        } else if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          item.click();
+        }
+      });
+    });
+    // On mouse leave from entire list, reset display
+    calcList.addEventListener('mouseleave', () => setActive(-1));
+    // On page load, reset display
+    setActive(-1);
+
+    // Create animated particles
+    function createParticles() {
+      const container = document.getElementById('particles-container');
+      const colors = ['#8000ff33', '#e100ff33', '#ffffff11'];
+      
+      for (let i = 0; i < 30; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        
+        // Random properties
+        const size = Math.random() * 8 + 3;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        
+        // Set styles
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.backgroundColor = color;
+        
+        // Random position
+        const posX = Math.random() * 100;
+        const posY = Math.random() * 100;
+        particle.style.left = `${posX}%`;
+        particle.style.top = `${posY}%`;
+        
+        // Animation
+        const duration = Math.random() * 30 + 10;
+        const delay = Math.random() * 5;
+        
+        particle.style.animation = `float ${duration}s ${delay}s infinite linear`;
+        
+        // Add to container
+        container.appendChild(particle);
+        
+        // Create floating animation
+        const keyframes = `
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            25% {
+                transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px) rotate(${Math.random() * 360}deg);
+            }
+            50% {
+                transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px) rotate(${Math.random() * 360}deg);
+            }
+            75% {
+                transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px) rotate(${Math.random() * 360}deg);
+            }
+            100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+        }`;
+        
+        const style = document.createElement('style');
+        style.innerHTML = keyframes;
+        document.head.appendChild(style);
+      }
+    }
+    
+    // Initialize particles on page load
+    window.addEventListener('load', createParticles);
+  </script>
+</body>
+</html>
